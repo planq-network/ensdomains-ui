@@ -17,6 +17,7 @@ function getWeb3Provider(providerOrUrl, option = 'any') {
 
 export async function setupWeb3({
   customProvider,
+  customNetwork = 'any',
   reloadOnAccountsChange = false,
   enforceReadOnly = false,
   enforceReload = false,
@@ -35,7 +36,7 @@ export async function setupWeb3({
   if (enforceReadOnly) {
     readOnly = true
     address = null
-    provider = getJsonRpcProvider(customProvider)
+    provider = getJsonRpcProvider(customProvider, customNetwork)
     return { provider, signer: undefined }
   }
 
@@ -46,19 +47,24 @@ export async function setupWeb3({
   if (customProvider) {
     if (typeof customProvider === 'string') {
       // handle raw RPC endpoint URL
-      if (customProvider.match(/localhost/) && ensAddress) {
+      if (
+        customProvider.match(/localhost/) &&
+        ensAddress &&
+        customNetwork === 'any'
+      ) {
         provider = getJsonRpcProvider(customProvider, {
           chainId: 1337,
           name: 'unknown',
           ensAddress
         })
       } else {
-        provider = getJsonRpcProvider(customProvider)
+        provider = getJsonRpcProvider(customProvider, customNetwork)
       }
       signer = provider.getSigner()
     } else {
       // handle EIP 1193 provider
-      provider = getWeb3Provider(customProvider)
+      customNetwork ||= 'any'
+      provider = getWeb3Provider(customProvider, customNetwork)
     }
     return { provider, signer }
   }
@@ -86,7 +92,7 @@ export async function setupWeb3({
   }
 
   if (window && window.ethereum) {
-    provider = getWeb3Provider(window.ethereum)
+    provider = getWeb3Provider(window.ethereum, customNetwork)
     signer = provider.getSigner()
     if (window.ethereum.on && reloadOnAccountsChange) {
       address = await signer.getAddress()
@@ -99,7 +105,7 @@ export async function setupWeb3({
     }
     return { provider, signer }
   } else if (window.web3 && window.web3.currentProvider) {
-    provider = getWeb3Provider(window.web3.currentProvider)
+    provider = getWeb3Provider(window.web3.currentProvider, customNetwork)
     const id = (await provider.getNetwork()).chainId
     signer = provider.getSigner()
     return { provider, signer }
@@ -108,7 +114,7 @@ export async function setupWeb3({
       const url = 'http://localhost:8545'
       await fetch(url)
       console.log('local node active')
-      provider = getJsonRpcProvider(url)
+      provider = getJsonRpcProvider(url, customNetwork)
     } catch (error) {
       if (
         error.readyState === 4 &&
