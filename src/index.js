@@ -5,6 +5,7 @@ export { utils, ethers } from 'ethers'
 
 export async function setupENS({
   customProvider,
+  customNetwork = 'any',
   ensAddress,
   reloadOnAccountsChange,
   enforceReadOnly,
@@ -12,6 +13,7 @@ export async function setupENS({
 } = {}) {
   const { provider } = await setupWeb3({
     customProvider,
+    customNetwork,
     reloadOnAccountsChange,
     enforceReadOnly,
     enforceReload,
