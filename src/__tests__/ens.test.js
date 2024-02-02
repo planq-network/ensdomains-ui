@@ -72,7 +72,7 @@ describe('Blockchain tests', () => {
     })
 
     test('ens registry, resolver and reverse registrar deployed', async () => {
-      const eth = getNamehash('eth')
+      const eth = getNamehash('plq')
       const ensContract = ens.getENSContractInstance()
       const ethOwner = await ensContract.owner(eth)
       expect(ethOwner).toBe(baseRegistrar)
@@ -86,19 +86,19 @@ describe('Blockchain tests', () => {
   describe('Registry', () => {
     test('getOwner returns owner', async () => {
       const accounts = await getAccounts()
-      const owner = await ens.getOwner('resolver.eth')
+      const owner = await ens.getOwner('resolver.plq')
       expect(owner).toBe(accounts[0])
     })
 
     test('setSubnodeOwner sets new subnode owner', async () => {
       const ensContract = ens.getENSContractInstance()
-      const owner = await ensContract.owner(getNamehash('subnode.resolver.eth'))
+      const owner = await ensContract.owner(getNamehash('subnode.resolver.plq'))
       const accounts = await getAccounts()
       expect(owner).toBe('0x0000000000000000000000000000000000000000')
-      const tx = await ens.setSubnodeOwner('subnode.resolver.eth', accounts[0])
+      const tx = await ens.setSubnodeOwner('subnode.resolver.plq', accounts[0])
       await tx.wait()
       const newOwner = await ensContract.owner(
-        getNamehash('subnode.resolver.eth')
+        getNamehash('subnode.resolver.plq')
       )
       expect(newOwner).toBe(accounts[0])
     })
@@ -107,13 +107,13 @@ describe('Blockchain tests', () => {
       const ensContract = ens.getENSContractInstance()
       const accounts = await getAccounts()
       const tx = await ens.setSubnodeRecord(
-        'subnode.resolver.eth',
+        'subnode.resolver.plq',
         accounts[1],
         publicResolver,
         0
       )
       await tx.wait()
-      const hash = getNamehash('subnode.resolver.eth')
+      const hash = getNamehash('subnode.resolver.plq')
       const newOwner = await ensContract.owner(hash)
       const newResolver = await ensContract.resolver(hash)
       const newTTL = await ensContract.ttl(hash)
@@ -124,25 +124,25 @@ describe('Blockchain tests', () => {
 
     test('setNewOwner sets new owner', async () => {
       const ensContract = ens.getENSContractInstance()
-      const hash = getNamehash('givethisaway.awesome.eth')
+      const hash = getNamehash('givethisaway.awesome.plq')
       const owner = await ensContract.owner(hash)
       const accounts = await getAccounts()
       expect(owner).toBe('0x0000000000000000000000000000000000000000')
       const tx = await ens.setSubnodeOwner(
-        'givethisaway.awesome.eth',
+        'givethisaway.awesome.plq',
         accounts[0]
       )
       await tx.wait()
       const owner2 = await ensContract.owner(hash)
       expect(owner2).toBe(accounts[0])
-      const tx2 = await ens.setOwner('givethisaway.awesome.eth', accounts[1])
+      const tx2 = await ens.setOwner('givethisaway.awesome.plq', accounts[1])
       await tx2.wait()
       const newOwner = await ensContract.owner(hash)
       expect(newOwner).toBe(accounts[1])
     })
 
     test('getResolver returns a resolver address when set', async () => {
-      const resolver = await ens.getResolver('resolver.eth')
+      const resolver = await ens.getResolver('resolver.plq')
       expect(resolver).toBeHex()
       expect(resolver).toBeEthAddress()
       expect(resolver).not.toBe('0x0000000000000000000000000000000000000000')
@@ -157,31 +157,31 @@ describe('Blockchain tests', () => {
 
     test('setResolver sets the resolver on a node', async () => {
       //test setResolver
-      const resolver = await ens.getResolver('awesome.eth')
+      const resolver = await ens.getResolver('awesome.plq')
       const mockResolver = '0x0000000000000000000000000000000000abcdef'
       expect(resolver).not.toBe(mockResolver)
 
-      const tx = await ens.setResolver('awesome.eth', mockResolver)
+      const tx = await ens.setResolver('awesome.plq', mockResolver)
       await tx.wait()
-      const newResolver = await ens.getResolver('awesome.eth')
+      const newResolver = await ens.getResolver('awesome.plq')
       expect(newResolver).toBeHex()
       expect(newResolver).toBeEthAddress()
       expect(newResolver.toLowerCase()).toBe(mockResolver)
     })
 
     test('getTTL returns a TTL', async () => {
-      const ttl = await ens.getTTL('resolver.eth')
+      const ttl = await ens.getTTL('resolver.plq')
       expect(parseInt(ttl, 16)).toBe(0)
     })
 
     test('createSubdomain makes a new subdomain', async () => {
       const accounts = await getAccounts()
       const ensContract = ens.getENSContractInstance()
-      const hash = getNamehash('new.resolver.eth')
+      const hash = getNamehash('new.resolver.plq')
       const oldOwner = await ensContract.owner(hash)
       // expect the initial owner to be no one
       expect(oldOwner).toBe('0x0000000000000000000000000000000000000000')
-      const tx = await ens.createSubdomain('new.resolver.eth')
+      const tx = await ens.createSubdomain('new.resolver.plq')
       await tx.wait()
       const newOwner = await ensContract.owner(hash)
       // Verify owner is the user and therefore the subdomain exists
@@ -191,17 +191,17 @@ describe('Blockchain tests', () => {
     test('deleteSubdomain deletes a subdomain', async () => {
       const accounts = await getAccounts()
       const ensContract = ens.getENSContractInstance()
-      const hash = getNamehash('new2.resolver.eth')
+      const hash = getNamehash('new2.resolver.plq')
       const oldOwner = await ensContract.owner(hash)
       // expect the initial owner to be no one
       expect(oldOwner).toBe('0x0000000000000000000000000000000000000000')
-      const tx = await ens.createSubdomain('new2.resolver.eth')
+      const tx = await ens.createSubdomain('new2.resolver.plq')
       await tx.wait()
       const newOwner = await ensContract.owner(hash)
       console.timeLog(newOwner)
       // Verify owner is the user and therefore the subdomain exists
       expect(newOwner).toBe(accounts[0])
-      const tx2 = await ens.deleteSubdomain('new2.resolver.eth')
+      const tx2 = await ens.deleteSubdomain('new2.resolver.plq')
       await tx2.wait()
       const deletedOwner = await ensContract.owner(hash)
       //Verify owner has been set to 0x00... to ensure deletion
@@ -210,24 +210,24 @@ describe('Blockchain tests', () => {
 
   describe('Resolver', () => {
     test('getAddress returns an address', async () => {
-      const addr = await ens.getAddress('resolver.eth')
+      const addr = await ens.getAddress('resolver.plq')
       expect(addr).toBeHex()
       expect(addr).toBeEthAddress()
       expect(addr).not.toBe('0x0000000000000000000000000000000000000000')
     })
 
     test('getAddress returns 0x000', async () => {
-      const tx = await ens.createSubdomain('addr.testing.eth')
+      const tx = await ens.createSubdomain('addr.testing.plq')
       await tx.wait()
-      const resolverAddr = await ens.getAddress('resolver.eth')
-      const tx2 = await ens.setResolver('addr.testing.eth', resolverAddr)
+      const resolverAddr = await ens.getAddress('resolver.plq')
+      const tx2 = await ens.setResolver('addr.testing.plq', resolverAddr)
       await tx2.wait()
-      const addr = await ens.getAddress('addr.testing.eth')
+      const addr = await ens.getAddress('addr.testing.plq')
       expect(addr).toBe('0x0000000000000000000000000000000000000000')
     })
 
     test('getAddr returns an eth address', async () => {
-      const addr = await ens.getAddress('resolver.eth', 'ETH')
+      const addr = await ens.getAddress('resolver.plq', 'PLQ')
       expect(addr).toBeHex()
       expect(addr).toBeEthAddress()
       expect(addr).not.toBe('0x0000000000000000000000000000000000000000')
@@ -235,35 +235,35 @@ describe('Blockchain tests', () => {
 
     test('setAddress sets an address', async () => {
       //reverts if no addr is present
-      const resolverAddr = await ens.getAddress('resolver.eth')
-      const tx = await ens.setResolver('superawesome.eth', resolverAddr)
+      const resolverAddr = await ens.getAddress('resolver.plq')
+      const tx = await ens.setResolver('superawesome.plq', resolverAddr)
       await tx.wait()
       const tx2 = await ens.setAddress(
-        'superawesome.eth',
+        'superawesome.plq',
         '0x0000000000000000000000000000000000012345'
       )
       await tx2.wait()
-      const addr = await ens.getAddress('superawesome.eth')
+      const addr = await ens.getAddress('superawesome.plq')
       expect(addr).toBe('0x0000000000000000000000000000000000012345')
     })
 
     test('setAddr sets an eth address', async () => {
       //reverts if no addr is present
-      const resolverAddr = await ens.getAddress('resolver.eth')
-      const tx = await ens.setResolver('superawesome.eth', resolverAddr)
+      const resolverAddr = await ens.getAddress('resolver.plq')
+      const tx = await ens.setResolver('superawesome.plq', resolverAddr)
       await tx.wait()
       const tx2 = await ens.setAddr(
-        'superawesome.eth',
-        'ETH',
+        'superawesome.plq',
+        'PLQ',
         '0x0000000000000000000000000000000000012345'
       )
       await tx2.wait()
-      const addr = await ens.getAddr('superawesome.eth', 'ETH')
+      const addr = await ens.getAddr('superawesome.plq', 'PLQ')
       expect(addr).toBe('0x0000000000000000000000000000000000012345')
     })
 
     test('getContent returns a 32 byte hash', async () => {
-      const content = await ens.getContent('oldresolver.eth')
+      const content = await ens.getContent('oldresolver.plq')
       expect(content.contentType).toBe('oldcontent')
       expect(content.value).toBeHex()
       expect(content.value).toMatchSnapshot()
@@ -273,11 +273,11 @@ describe('Blockchain tests', () => {
 
     // test('setContent sets 32 byte hash', async () => {
     //   await ens.setContent(
-    //     'oldresolver.eth',
+    //     'oldresolver.plq',
     //     '0xd1de9994b4d039f6548d191eb26786769f580809256b4685ef316805265ea162'
     //   )
 
-    //   const content = await ens.getContent('oldresolver.eth')
+    //   const content = await ens.getContent('oldresolver.plq')
     //   expect(content.contentType).toBe('oldcontent')
     //   expect(content.value).toBeHex()
     //   expect(content.value).toMatchSnapshot()
@@ -287,9 +287,9 @@ describe('Blockchain tests', () => {
     test('setContentHash sets up ipfs has', async () => {
       const contentHash =
         'ipfs://QmTeW79w7QQ6Npa3b1d5tANreCDxF2iDaAPsDvW6KtLmfB'
-      await ens.setContenthash('abittooawesome.eth', contentHash)
+      await ens.setContenthash('abittooawesome.plq', contentHash)
 
-      const content = await ens.getContent('abittooawesome.eth')
+      const content = await ens.getContent('abittooawesome.plq')
       expect(content.contentType).toBe('contenthash')
       expect(content.value).toBe(
         'ipfs://bafybeico3uuyj3vphxpvbowchdwjlrlrh62awxscrnii7w7flu5z6fk77y'
@@ -299,9 +299,9 @@ describe('Blockchain tests', () => {
     test('setContentHash sets 32 byte hash', async () => {
       const contentHash =
         'bzz://d1de9994b4d039f6548d191eb26786769f580809256b4685ef316805265ea162'
-      await ens.setContenthash('abittooawesome.eth', contentHash)
+      await ens.setContenthash('abittooawesome.plq', contentHash)
 
-      const content = await ens.getContent('abittooawesome.eth')
+      const content = await ens.getContent('abittooawesome.plq')
       expect(content.contentType).toBe('contenthash')
       expect(content.value).toBe(
         'bzz://d1de9994b4d039f6548d191eb26786769f580809256b4685ef316805265ea162'
@@ -318,24 +318,24 @@ describe('Blockchain tests', () => {
     test('getName gets a name for an address', async () => {
       const accounts = await getAccounts()
       const { name } = await ens.getName(accounts[2])
-      expect(name).toBe('eth')
+      expect(name).toBe('plq')
     })
 
     test('claimAndSetReverseRecordName claims and sets a name', async () => {
       const accounts = await getAccounts()
       const { name } = await ens.getName(accounts[0])
-      expect(name).toBe('abittooawesome.eth')
-      const tx = await ens.claimAndSetReverseRecordName('resolver.eth', 2000000)
+      expect(name).toBe('abittooawesome.plq')
+      const tx = await ens.claimAndSetReverseRecordName('resolver.plq', 2000000)
       await tx.wait()
       const { name: nameAfter } = await ens.getName(accounts[0])
-      expect(nameAfter).toBe('resolver.eth')
+      expect(nameAfter).toBe('resolver.plq')
     })
   })
 
   describe('Helper functions', () => {
     test('getDomainDetails gets rootdomain and resolver details', async () => {
       try {
-        const domain = await ens.getDomainDetails('abittooawesome.eth')
+        const domain = await ens.getDomainDetails('abittooawesome.plq')
         expect(domain.owner).not.toBe(
           '0x0000000000000000000000000000000000000000'
         )
@@ -344,7 +344,7 @@ describe('Blockchain tests', () => {
           '0x0000000000000000000000000000000000000000'
         )
         expect(domain.resolver).toBeEthAddress()
-        const addr = await ens.getAddress('abittooawesome.eth')
+        const addr = await ens.getAddress('abittooawesome.plq')
         expect(domain.addr).toBe(addr)
         expect(domain.content).toMatchSnapshot()
       } catch (e) {
@@ -353,7 +353,7 @@ describe('Blockchain tests', () => {
     })
 
     test('getSubdomains gets all subdomains', async () => {
-      const domains = await ens.getSubdomains('eth')
+      const domains = await ens.getSubdomains('plq')
       expect(domains.length).toBeGreaterThan(0)
       expect(domains[0].labelhash).toMatchSnapshot()
     })
