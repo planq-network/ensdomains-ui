@@ -331,9 +331,9 @@ export default class Registrar {
 
   async getEthPrice() {
     //const oracleens = 'eth-usd.data.plq'
+    const contractAddress = "0x8147B0A20E7d6955a98A47839D5c7E435229A036";
     try{
       //const contractAddress = await this.getAddress(oracleens)
-      const contractAddress = "0x8147B0A20E7d6955a98A47839D5c7E435229A036";
       const oracle = await this.getOracle(contractAddress)
       return (await oracle.latestAnswer()).toNumber() / 100000000
     }catch(e){
