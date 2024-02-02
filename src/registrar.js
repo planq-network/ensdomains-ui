@@ -337,7 +337,7 @@ export default class Registrar {
       const oracle = await this.getOracle(contractAddress)
       return (await oracle.latestAnswer()).toNumber() / 100000000
     }catch(e){
-      console.warn(`Either ${oracleens} does not exist or Oracle is not throwing an error`, e)
+      console.warn(`Either ${contractAddress} does not exist or Oracle is not throwing an error`, e)
     }
   }
 
