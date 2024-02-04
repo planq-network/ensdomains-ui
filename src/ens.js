@@ -122,7 +122,7 @@ export class ENS {
   }
 
   async getAddress(name) {
-    return this.getAddr(name, 'PLQ')
+    return this.getAddr(name, 'ETH')
   }
 
   async getAddr(name, key) {
