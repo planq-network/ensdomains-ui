@@ -56,7 +56,7 @@ export async function setupWeb3({ Web3, provider }) {
           'No web3 instance injected. Falling back to cloud provider.'
         )
         readOnly = true
-        web3 = new Web3(getNetworkProviderUrl('1'))
+        web3 = new Web3(getNetworkProviderUrl('7070'))
         web3Read = web3
         return web3
       }
@@ -96,6 +96,8 @@ function getNetworkProviderUrl(id) {
       return `https://rinkeby.infura.io/v3/90f210707d3c450f847659dc9a3436ea`
     case '5':
       return `https://goerli.infura.io/v3/90f210707d3c450f847659dc9a3436ea`
+    case '7070':
+      return `https://evm-rpc.planq.network`
     default:
       return 'private'
   }
